@@ -1,0 +1,16 @@
+.feed {
+    padding-left: 1rem;
+    // border: 1px violet solid;
+    &__items {
+      // border: 1px violet solid;
+      display: flex;
+      justify-content: space-around;
+      flex-direction: row;
+    //   &--box {
+    //     // border: 1px violet solid;
+  
+    //   }
+  
+    }
+    
+  }

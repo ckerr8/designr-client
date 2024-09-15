@@ -1,0 +1,11 @@
+.foot {
+    // z-index: 10;
+    // position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    &__content {
+        margin: auto;
+    }
+}
