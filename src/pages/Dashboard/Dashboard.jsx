@@ -4,6 +4,7 @@ import '../../styles/global.scss'
 import Feed from "../../components/Feed/Feed";
 import ViewCards from "../../components/ViewCards/ViewCards";
 
+
 export default function Dashboard() {
         return (
           <>
