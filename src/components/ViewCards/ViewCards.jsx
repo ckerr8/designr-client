@@ -37,16 +37,16 @@ export default function ViewCards() {
             <div className="wrap__views--tasks">
               <div>
                 <h2>Task List</h2>
-                <div>
+                <div className='tasks'>
                   <p>Task 1</p>
                 </div>
-                <div>
+                <div className='tasks'>
                   <p>Task 2</p>
                 </div>
-                <div>
+                <div className='tasks'>
                   <p>Task 3</p>
                 </div>
-                <div>
+                <div className='tasks'>
                   <p>Task 4</p>
                 </div>
               </div>
@@ -56,18 +56,28 @@ export default function ViewCards() {
           <div className="wrap__deadlines">
             <div className="wrap__deadlines--inner">
               <h2> Upcoming Deadlines</h2>
-              <div>
+              <div className='deadline'>
                 <p>Instock Logo</p>
               </div>
 
-              <div>
+              <div className='deadline'>
                 <p>Brainflix Landing page</p>
               </div>
-              <div>
+
+              <div className='deadline'>
                 <p>Nitro Coffee Menu</p>
               </div>
 
-              <div>
+              <div className='deadline'>
+                <p>Cinimaticats Reels</p>
+              </div>
+              <div className='deadline'>
+                <p>Cinimaticats Reels</p>
+              </div>
+              <div className='deadline'>
+                <p>Cinimaticats Reels</p>
+              </div>
+              <div className='deadline'>
                 <p>Cinimaticats Reels</p>
               </div>
             </div>
