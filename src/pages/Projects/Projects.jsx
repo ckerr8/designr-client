@@ -1,38 +1,58 @@
-import Navigation from "../../components/Navigation/Navigation";
-import Footer from "../../components/Footer/Footer";
-import '../../styles/global.scss'
-import { Card, Image, Header } from 'semantic-ui-react';
-import './Projects.scss'
+import * as React from 'react';
 
-export default function Dashboard() {
-        return (
-          <>
-          <div className="screen">
-          <Navigation />
-          <div className="screen__content">
-          <Card className="wrap">
-            <Image className="wrap__img" src="../../src/assets/images/bold.png"></Image>
-            <Header>
-            Card</Header>
-            </Card>
-            <Card className="wrap">
-            <Image className="wrap__img" src="../../src/assets/images/bold.png"></Image>
-            <Header>
-            Card</Header>
-            </Card>
-            <Card className="wrap">
-            <Image className="wrap__img" src="../../src/assets/images/bold.png"></Image>
-            <Header>
-            Card</Header>
-            </Card>
-            <Card className="wrap">
-            <Image className="wrap__img" src="../../src/assets/images/bold.png"></Image>
-            <Header>
-            Card</Header>
-            </Card>
-          </div>
-          </div>
-          <Footer />
-          </>
-        );
-      }
+import { alpha } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import AppNavbar from '../../components/AppNavBar/AppNavBar.jsx';
+import Header from '../../components/Header/Header.jsx';
+import MainGrid from '../../components/MainGrid/MainGrid.jsx';
+import SideMenu from '../../components/SideMenu/SideMenu.jsx';
+import AppTheme from '../../shared-theme/AppTheme.jsx';
+import { chartsCustomizations } from '../../theme/customizations/charts.jsx';
+import { dataGridCustomizations } from '../../theme/customizations/dataDisplay.jsx';
+import { datePickersCustomizations } from '../../theme/customizations/datePickers.jsx';
+import { treeViewCustomizations } from '../../theme/customizations/TreeView.jsx';
+
+const xThemeComponents = {
+  ...chartsCustomizations,
+  ...dataGridCustomizations,
+  ...datePickersCustomizations,
+  ...treeViewCustomizations,
+};
+
+export default function Dashboard(props) {
+  return (
+    <AppTheme {...props} themeComponents={xThemeComponents}>
+      <CssBaseline enableColorScheme />
+      <Box sx={{ display: 'flex' }}>
+        <SideMenu />
+        <AppNavbar />
+        {/* Main content */}
+        <Box
+          component="main"
+          sx={(theme) => ({
+            flexGrow: 1,
+            backgroundColor: theme.vars
+              ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+              : alpha(theme.palette.background.default, 1),
+            overflow: 'auto',
+          })}
+        >
+          <Stack
+            spacing={2}
+            sx={{
+              alignItems: 'center',
+              mx: 3,
+              pb: 10,
+              mt: { xs: 8, md: 0 },
+            }}
+          >
+            <Header />
+            <MainGrid />
+          </Stack>
+        </Box>
+      </Box>
+    </AppTheme>
+  );
+}
