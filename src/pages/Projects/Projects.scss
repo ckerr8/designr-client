@@ -1,0 +1,16 @@
+.screen {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.wrap {
+    display: flex;
+    flex-direction: row;
+    width:50%;
+    height: 30vw;
+    &__img {
+        max-height: 10rem;
+        margin: .5rem auto;
+    }
+}
