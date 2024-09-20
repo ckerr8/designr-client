@@ -11,25 +11,25 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import api from '../../api';
-import './Projects.scss';
+import './DesignAssets.scss';
 
 
-export default function Projects() {
-  const [projects, setProjects] = useState([]);
+export default function Assets() {
+  const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchProjects();
+    fetchAssets();
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchAssets = async () => {
     try {
-      const response = await api.get('/projects'); // Adjust the endpoint as needed
-      setProjects(response.data);
+      const response = await api.get('/assets'); // Adjust the endpoint as needed
+      setAssets(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch projects');
+      setError('Failed to fetch design assets');
       setLoading(false);
     }
   };
@@ -39,24 +39,22 @@ export default function Projects() {
 
   return (
     <>
-
       <div className='main-contain'>
-        {projects.map((project) => (
-          <Card key={project.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
+        {assets.map((asset) => (
+          <Card key={asset.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
             <CardActionArea>
               <CardMedia
                 component="img"
                 height="160"
-                width="100"
-                image={project.remote_url}
-                alt={project.title}
+                image={asset.remote_url}
+                alt={asset.category}
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  {project.project_name}
+                  {asset.asset_name}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {project.description}
+                  {asset.category}
                 </Typography>
               </CardContent>
             </CardActionArea>

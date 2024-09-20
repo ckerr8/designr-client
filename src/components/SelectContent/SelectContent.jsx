@@ -67,7 +67,7 @@ export default function SelectContent() {
       </MenuItem>
       <MenuItem value={10}>
         <ListItemAvatar>
-          <Avatar alt="Sitemark App">
+          <Avatar alt="Designr">
             <SmartphoneRoundedIcon sx={{ fontSize: '1rem' }} />
           </Avatar>
         </ListItemAvatar>

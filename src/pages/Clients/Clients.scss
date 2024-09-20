@@ -1,0 +1,10 @@
+.main-contain {
+    display: flex;
+    justify-content: space-around;
+    padding-left: 20rem;
+    flex-wrap: wrap;
+    &__item {
+        margin: 2rem 0;
+
+    }
+}

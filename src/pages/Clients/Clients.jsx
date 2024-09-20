@@ -11,25 +11,25 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import api from '../../api';
-import './Projects.scss';
+import './Clients.scss';
 
 
-export default function Projects() {
-  const [projects, setProjects] = useState([]);
+export default function Clients() {
+  const [clients, setclients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchProjects();
+    fetchClients();
   }, []);
 
-  const fetchProjects = async () => {
+  const fetchClients = async () => {
     try {
-      const response = await api.get('/projects'); // Adjust the endpoint as needed
-      setProjects(response.data);
+      const response = await api.get('/clients'); // Adjust the endpoint as needed
+      setclients(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch projects');
+      setError('Failed to fetch design clients');
       setLoading(false);
     }
   };
@@ -41,22 +41,21 @@ export default function Projects() {
     <>
 
       <div className='main-contain'>
-        {projects.map((project) => (
-          <Card key={project.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
+        {clients.map((client) => (
+          <Card key={client.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
             <CardActionArea>
               <CardMedia
                 component="img"
                 height="160"
-                width="100"
-                image={project.remote_url}
-                alt={project.title}
+                image={client.remote_url}
+                alt={client.title}
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  {project.project_name}
+                  {client.contact_name}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {project.description}
+                  {client.category}
                 </Typography>
               </CardContent>
             </CardActionArea>
