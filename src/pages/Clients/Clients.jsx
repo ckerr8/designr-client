@@ -10,12 +10,12 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import { Link } from 'react-router-dom'; // Import Link
 import api from '../../api';
 import './Clients.scss';
 
-
 export default function Clients() {
-  const [clients, setclients] = useState([]);
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -26,10 +26,10 @@ export default function Clients() {
   const fetchClients = async () => {
     try {
       const response = await api.get('/clients'); // Adjust the endpoint as needed
-      setclients(response.data);
+      setClients(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch design clients');
+      setError('Failed to fetch clients');
       setLoading(false);
     }
   };
@@ -39,11 +39,10 @@ export default function Clients() {
 
   return (
     <>
-
       <div className='main-contain'>
         {clients.map((client) => (
           <Card key={client.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
-            <CardActionArea>
+            <CardActionArea component={Link} to={`/clients/${client.id}`}>
               <CardMedia
                 component="img"
                 height="160"
@@ -65,4 +64,3 @@ export default function Clients() {
     </>
   );
 }
-

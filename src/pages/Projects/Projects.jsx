@@ -10,9 +10,9 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import { Link } from 'react-router-dom'; // Import Link
 import api from '../../api';
 import './Projects.scss';
-
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -39,11 +39,10 @@ export default function Projects() {
 
   return (
     <>
-
       <div className='main-contain'>
         {projects.map((project) => (
           <Card key={project.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
-            <CardActionArea>
+            <CardActionArea component={Link} to={`/projects/${project.id}`}>
               <CardMedia
                 component="img"
                 height="160"
@@ -66,4 +65,3 @@ export default function Projects() {
     </>
   );
 }
-

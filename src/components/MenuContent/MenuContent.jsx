@@ -20,7 +20,7 @@ const mainListItems = [
   { text: 'Clients', to:'/clients', icon: <PeopleRoundedIcon /> },
   { text: 'Projects', to:'/projects', icon: <AssignmentRoundedIcon /> },
   { text: 'Assets', to:'/assets', icon: <Palette />},
-  { text: 'Analytics', to:'/analytics', icon: <AnalyticsRoundedIcon /> },
+  { text: 'Download', to:'/analytics', icon: <AnalyticsRoundedIcon /> },
  
 ];
 

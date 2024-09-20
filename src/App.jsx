@@ -16,6 +16,7 @@ import Clients from './pages/Clients/Clients';
 import DesignAssets from "./pages/DesignAssets/DesignAssets";
 import Analytics from './pages/Analytics/Analytics.jsx'
 import ProjectsDetail from "./pages/Projects/ProjectsDetail/ProjectsDetail.jsx"
+import ClientsDetail from "./pages/Clients/ClientsDetail/CLientsDetail.jsx"
 import { dataGridCustomizations } from './theme/customizations/dataDisplay.jsx';
 import { datePickersCustomizations } from './theme/customizations/datePickers.jsx';
 import { treeViewCustomizations } from './theme/customizations/TreeView.jsx';
@@ -60,6 +61,10 @@ function App(props) {
     <Route 
     path='/projects/:idFromParams' 
     element={<ProjectsDetail />} />
+
+    <Route 
+    path='/clients/:idFromParams' 
+    element={<ClientsDetail />} />
       </Routes>
 
     </AppTheme>
