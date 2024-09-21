@@ -1,18 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid2';
-import SideMenu from '../../components/SideMenu/SideMenu.jsx';
-import Header from '../../components/Header/Header.jsx';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import CardActionArea from '@mui/material/CardActionArea';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import api from '../../api';
 import './Projects.scss';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -25,7 +41,7 @@ export default function Projects() {
 
   const fetchProjects = async () => {
     try {
-      const response = await api.get('/projects'); // Adjust the endpoint as needed
+      const response = await api.get('/projects');
       setProjects(response.data);
       setLoading(false);
     } catch (err) {
@@ -38,30 +54,33 @@ export default function Projects() {
   if (error) return <div>{error}</div>;
 
   return (
-    <>
-      <div className='main-contain'>
-        {projects.map((project) => (
-          <Card key={project.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
-            <CardActionArea component={Link} to={`/projects/${project.id}`}>
-              <CardMedia
-                component="img"
-                height="160"
-                width="100"
-                image={project.remote_url}
-                alt={project.title}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+    <section className='main-contain'>
+      <TableContainer component={Paper} className='main-contain__item'>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Project Name</StyledTableCell>
+              <StyledTableCell align="right">Description</StyledTableCell>
+              <StyledTableCell align="right">Deadline</StyledTableCell>
+              <StyledTableCell align="right">Price</StyledTableCell>
+              <StyledTableCell align="right">Client Contact</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {projects.map((project) => (
+              <StyledTableRow key={project.id} component={Link} to={`/projects/${project.id}`} style={{ textDecoration: 'none' }}>
+                <StyledTableCell component="th" scope="row">
                   {project.project_name}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {project.description}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
-      </div>
-    </>
+                </StyledTableCell>
+                <StyledTableCell align="right">{project.description}</StyledTableCell>
+                <StyledTableCell align="right">{project.deadline}</StyledTableCell>
+                <StyledTableCell align="right">${project.price}</StyledTableCell>
+                <StyledTableCell align="right">{project.client_contact_name}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </section>
   );
 }

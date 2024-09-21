@@ -1,34 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid2';
-import SideMenu from '../../components/SideMenu/SideMenu.jsx';
-import Header from '../../components/Header/Header.jsx';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import api from '../../api';
+import { Link } from 'react-router-dom'; 
 import './DesignAssets.scss';
-
+import AddAssetModal from '../../components/AddAsset/AddAsset';
 
 export default function Assets() {
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     fetchAssets();
   }, []);
 
+  // const fetchAssets = async () => {
+  //   try {
+  //     const response = await api.get('/assets');
+  //     setAssets(response.data);
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setError('Failed to fetch design assets');
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleOpenAddModal = () => setIsAddModalOpen(true);
+  const handleCloseAddModal = () => setIsAddModalOpen(false);
+
+  const handleAddAsset = async (newAsset) => {
+    try {
+      await api.post('/assets', newAsset);
+      handleCloseAddModal();
+      await fetchAssets();
+    } catch (err) {
+      console.error('Failed to add new asset:', err);
+    }
+  };
+  
   const fetchAssets = async () => {
     try {
-      const response = await api.get('/assets'); // Adjust the endpoint as needed
+      const response = await api.get('/assets');
+      console.log('Fetched assets:', response.data);
       setAssets(response.data);
       setLoading(false);
     } catch (err) {
+      console.error('Failed to fetch assets:', err);
       setError('Failed to fetch design assets');
       setLoading(false);
     }
@@ -40,9 +64,17 @@ export default function Assets() {
   return (
     <>
       <div className='main-contain'>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          startIcon={<AddIcon />} 
+          onClick={handleOpenAddModal}
+        >
+          Add Asset
+        </Button>
         {assets.map((asset) => (
           <Card key={asset.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
-            <CardActionArea>
+            <CardActionArea component={Link} to={`/assets/${asset.id}`}>
               <CardMedia
                 component="img"
                 height="160"
@@ -61,7 +93,11 @@ export default function Assets() {
           </Card>
         ))}
       </div>
+      <AddAssetModal
+        open={isAddModalOpen}
+        handleClose={handleCloseAddModal}
+        onAssetCreated={handleAddAsset}  
+      />
     </>
   );
 }
-

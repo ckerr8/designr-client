@@ -16,7 +16,8 @@ import Clients from './pages/Clients/Clients';
 import DesignAssets from "./pages/DesignAssets/DesignAssets";
 import Analytics from './pages/Analytics/Analytics.jsx'
 import ProjectsDetail from "./pages/Projects/ProjectsDetail/ProjectsDetail.jsx"
-import ClientsDetail from "./pages/Clients/ClientsDetail/CLientsDetail.jsx"
+import ClientsDetail from "./pages/Clients/ClientsDetail/ClientsDetail.jsx"
+import AddClient from "./pages/Clients/AddClient/AddClient.jsx"
 import { dataGridCustomizations } from './theme/customizations/dataDisplay.jsx';
 import { datePickersCustomizations } from './theme/customizations/datePickers.jsx';
 import { treeViewCustomizations } from './theme/customizations/TreeView.jsx';
@@ -25,6 +26,7 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import "./App.scss";
+import AssetsDetail from './pages/DesignAssets/AssetsDetail/AssetsDetail.jsx';
 
 
 
@@ -65,6 +67,18 @@ function App(props) {
     <Route 
     path='/clients/:idFromParams' 
     element={<ClientsDetail />} />
+   
+    <Route 
+    path='/clients/add' 
+    element={<AddClient />} />
+
+    <Route 
+    path='/assets/:idFromParams' 
+    element={<AssetsDetail />} />
+
+    <Route 
+    path='/assets/edit' 
+    element={<AssetsDetail />} />
       </Routes>
 
     </AppTheme>

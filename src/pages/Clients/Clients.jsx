@@ -9,8 +9,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import CardActionArea from '@mui/material/CardActionArea';
-import { Link } from 'react-router-dom'; // Import Link
+import { Link } from 'react-router-dom';
 import api from '../../api';
 import './Clients.scss';
 
@@ -40,6 +42,11 @@ export default function Clients() {
   return (
     <>
       <div className='main-contain'>
+      <Box sx={{ '& > :not(style)': { m: 1 } }}>
+      <Fab color="primary" aria-label="add" component={Link} to={'/clients/add'}>
+        <AddIcon />
+      </Fab>
+        </Box>
         {clients.map((client) => (
           <Card key={client.id} className='main-contain__item' sx={{ maxWidth: 345 }}>
             <CardActionArea component={Link} to={`/clients/${client.id}`}>
