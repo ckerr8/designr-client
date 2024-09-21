@@ -5,6 +5,7 @@ import { Card, CardActionArea, CardMedia, CardContent, Typography, Box, Tabs, Ta
 import PropTypes from 'prop-types';
 import { List, ListItem, ListItemText } from '@mui/material';
 import { Link } from "react-router-dom";
+import DeleteClient from "../../../components/DeleteClient/DeleteClient";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -46,6 +47,7 @@ export default function ClientsDetail() {
     const [error, setError] = useState(null);
     const [value, setValue] = useState(0);
     const [tasks, setTasks] = useState([]);
+    
 
     useEffect(() => {
         const fetchClientData = async () => {
@@ -66,20 +68,29 @@ export default function ClientsDetail() {
         fetchClientData();
     }, [idFromParams]);
 
-    useEffect(() => {
-        const fetchClientData = async () => {
-            try {
-                const response = await api.get(`/clients/${idFromParams}`);
-                setClientData(response.data);
-            } catch (err) {
-                setError('Failed to fetch client data');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const handleOpenDeleteModal = () => {
+        setDeleteModalOpen(true);
+      };
+    
+      const handleCloseDeleteModal = () => {
+        setDeleteModalOpen(false);
+      };
 
-        fetchClientData();
-    }, [idFromParams]);
+    const handleDeleteClient = async (clientId) => {
+        try {
+          const response = await api.delete(`/clients/${clientId}`);
+          console.log(response.data.message);
+          if (response.data.warning) {
+            console.warn(response.data.warning);
+          }
+          // Handle successful deletion (e.g., navigate away or update state)
+          handleCloseDeleteModal();
+        } catch (error) {
+          console.error('Error deleting asset:', error);
+          // Handle error (e.g., show error message to user)
+        }
+      };
+
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -194,6 +205,13 @@ export default function ClientsDetail() {
                     </div>
                 )}
             </section>
+            <DeleteClient 
+            clientId={clientData.id} 
+            onDelete={handleDeleteClient}
+    // Handle deletion logic here (e.g., call API to delete client)
+    // Update state or handle success/error messages as needed
+  />
         </div>
+        
     );
 }

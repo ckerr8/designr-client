@@ -16,6 +16,7 @@ import Clients from './pages/Clients/Clients';
 import DesignAssets from "./pages/DesignAssets/DesignAssets";
 import Analytics from './pages/Analytics/Analytics.jsx'
 import ProjectsDetail from "./pages/Projects/ProjectsDetail/ProjectsDetail.jsx"
+import AddProject from './pages/Projects/AddProject/AddProject.jsx';
 import ClientsDetail from "./pages/Clients/ClientsDetail/ClientsDetail.jsx"
 import AddClient from "./pages/Clients/AddClient/AddClient.jsx"
 import { dataGridCustomizations } from './theme/customizations/dataDisplay.jsx';
@@ -27,8 +28,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import "./App.scss";
 import AssetsDetail from './pages/DesignAssets/AssetsDetail/AssetsDetail.jsx';
-
-
+import DeleteProject from './components/DeleteProject/DeleteProject.jsx';
 
 function App(props) {
   return (
@@ -56,13 +56,24 @@ function App(props) {
     <Route 
     path='/projects' 
     element={<Projects />} />
+    
+    <Route 
+    path='/projects/:idFromParams' 
+    element={<ProjectsDetail />} />
+
+    <Route 
+    path='/projects/:idFromParams/delete' 
+    element={<DeleteProject />} />
+
+    <Route 
+    path='/projects/add'
+    element={<AddProject />} />
+
+
     <Route 
     path='/analytics' 
     element={<Analytics />} />
 
-    <Route 
-    path='/projects/:idFromParams' 
-    element={<ProjectsDetail />} />
 
     <Route 
     path='/clients/:idFromParams' 

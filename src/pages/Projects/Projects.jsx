@@ -7,6 +7,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 import api from '../../api';
 import './Projects.scss';
@@ -55,6 +58,11 @@ export default function Projects() {
 
   return (
     <section className='main-contain'>
+            <Box sx={{ '& > :not(style)': { m: 1 } }}>
+      <Fab color="primary" aria-label="add" component={Link} to={'/projects/add'}>
+        <AddIcon />
+      </Fab>
+        </Box>
       <TableContainer component={Paper} className='main-contain__item'>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
@@ -68,9 +76,11 @@ export default function Projects() {
           </TableHead>
           <TableBody>
             {projects.map((project) => (
-              <StyledTableRow key={project.id} component={Link} to={`/projects/${project.id}`} style={{ textDecoration: 'none' }}>
+              <StyledTableRow key={project.id}>
                 <StyledTableCell component="th" scope="row">
-                  {project.project_name}
+                  <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {project.project_name}
+                  </Link>
                 </StyledTableCell>
                 <StyledTableCell align="right">{project.description}</StyledTableCell>
                 <StyledTableCell align="right">{project.deadline}</StyledTableCell>
