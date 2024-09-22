@@ -29,6 +29,7 @@ import '@fontsource/roboto/700.css';
 import "./App.scss";
 import AssetsDetail from './pages/DesignAssets/AssetsDetail/AssetsDetail.jsx';
 import DeleteProject from './components/DeleteProject/DeleteProject.jsx';
+import TasksDetail from './pages/Tasks/Tasks.jsx';
 
 function App(props) {
   return (
@@ -68,6 +69,10 @@ function App(props) {
     <Route 
     path='/projects/add'
     element={<AddProject />} />
+
+    <Route 
+    path='/tasks/:idFromParams'
+    element={<TasksDetail />} />
 
 
     <Route 
