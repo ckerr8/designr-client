@@ -6,10 +6,10 @@ import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle, Box
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddTask from '../../../components/AddTask/AddTask'; // Ensure this path is correct
+import AddTask from '../../../components/AddTask/AddTask';
 
 export default function ProjectDetails() {
-    const { idFromParams } = useParams(); // Extracts project ID from URL
+    const { idFromParams } = useParams();
     const navigate = useNavigate();
     
     const [project, setProject] = useState(null);
@@ -19,7 +19,6 @@ export default function ProjectDetails() {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
-    // Define fetchProjectWithTasks outside of useEffect
     const fetchProjectWithTasks = async () => {
         try {
             const response = await api.get(`/projects/${idFromParams}`);
@@ -33,17 +32,13 @@ export default function ProjectDetails() {
     };
 
     useEffect(() => {
-        if (!idFromParams) return;
-        fetchProjectWithTasks();
+        if (idFromParams) {
+            fetchProjectWithTasks();
+        }
     }, [idFromParams]);
 
-    const handleOpenDeleteModal = () => {
-        setDeleteModalOpen(true);
-    };
-
-    const handleCloseDeleteModal = () => {
-        setDeleteModalOpen(false);
-    };
+    const handleOpenDeleteModal = () => setDeleteModalOpen(true);
+    const handleCloseDeleteModal = () => setDeleteModalOpen(false);
 
     const handleDelete = async () => {
         try {
@@ -56,15 +51,25 @@ export default function ProjectDetails() {
         }
     };
 
+    const handleTaskDeleted = async (taskId) => {
+        try {
+            await api.delete(`/tasks/${taskId}`);
+            await fetchProjectWithTasks();
+        } catch (err) {
+            console.error('Error deleting task:', err);
+            setError('Failed to delete task. Please try again.');
+        }
+    };
+
     const handleAddTaskOpen = () => setIsAddTaskOpen(true);
     const handleAddTaskClose = () => setIsAddTaskOpen(false);
 
     const handleTaskCreated = async (newTask) => {
         console.log("New Task Created:", newTask);
         handleAddTaskClose();
-        await fetchProjectWithTasks(); // Refetch project data to update tasks
+        await fetchProjectWithTasks();
     };
-  
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
     if (!project) return <div>No project found</div>;
@@ -83,7 +88,6 @@ export default function ProjectDetails() {
             <Typography variant="body1">Deadline: {new Date(project.deadline).toLocaleDateString()}</Typography>
             <Typography variant="body1">Price: ${project.price}</Typography>
 
-            {/* Tasks Section */}
             <Box sx={{ mt: 4 }}>
                 <Typography variant="h4">Tasks</Typography>
                 {tasks.length === 0 ? (
@@ -110,6 +114,9 @@ export default function ProjectDetails() {
                                     <Typography variant="body2">
                                         Status: {task.status}
                                     </Typography>
+                                    <Button onClick={() => handleTaskDeleted(task.id)} color="error">
+                                        Delete Task
+                                    </Button>
                                 </CardContent>
                             </CardActionArea>
                         </Card>
@@ -118,10 +125,8 @@ export default function ProjectDetails() {
                 <Button variant="contained" onClick={handleAddTaskOpen} sx={{ mt: 2 }}>Add New Task</Button>
             </Box>
 
-            {/* Add Task Dialog */}
             <AddTask open={isAddTaskOpen} handleClose={handleAddTaskClose} onAssetCreated={handleTaskCreated} />
 
-            {/* Delete Project Dialog */}
             <Dialog open={deleteModalOpen} onClose={handleCloseDeleteModal}>
                 <DialogTitle>Delete Project</DialogTitle>
                 <DialogContent>
