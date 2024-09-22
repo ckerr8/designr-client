@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from '../../api';
-import { 
-  Card, CardActionArea, CardContent, Typography
-} from '@mui/material';
+import { Card, CardActionArea, CardContent, Typography } from '@mui/material';
 
 export default function TasksDetail() {
     const { idFromParams } = useParams();
@@ -18,10 +16,15 @@ export default function TasksDetail() {
         const fetchTask = async () => {
             try {
                 const response = await api.get(`/tasks/${idFromParams}`);
-                setTask(response.data || null);
-                setLoading(false);
+                if (response.data) {
+                    setTask(response.data);
+                } else {
+                    setError('No task found');
+                }
             } catch (err) {
+                console.error("Error fetching task:", err);
                 setError('Failed to fetch task');
+            } finally {
                 setLoading(false);
             }
         };
@@ -31,7 +34,6 @@ export default function TasksDetail() {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
-    if (!task) return <div>No task found</div>;
 
     return (
         <div className='main-contain'>

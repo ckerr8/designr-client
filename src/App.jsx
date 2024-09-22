@@ -57,6 +57,7 @@ function App(props) {
     <Route 
     path='/projects' 
     element={<Projects />} />
+
     
     <Route 
     path='/projects/:idFromParams' 

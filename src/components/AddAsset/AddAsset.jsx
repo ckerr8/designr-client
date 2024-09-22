@@ -37,7 +37,7 @@ export default function CreateAssetModal({ open, handleClose, onAssetCreated }) 
       handleClose();
     } catch (err) {
       console.error('Failed to create asset:', err);
-      // Handle error (e.g., show error message to user)
+     //Add error handling
     }
   };
 
