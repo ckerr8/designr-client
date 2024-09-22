@@ -90,6 +90,7 @@ export default function AssetsDetail() {
           }
           // Handle successful deletion (e.g., navigate away or update state)
           handleCloseDeleteModal();
+          navigate('/assets'); // Navigate away after deletion
         } catch (error) {
           console.error('Error deleting asset:', error);
           // Handle error (e.g., show error message to user)

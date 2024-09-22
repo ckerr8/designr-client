@@ -11,7 +11,11 @@ import {
 
 export default function DeleteAssetModal({ open, handleClose, asset, onDelete }) {
   const handleDelete = () => {
-    onDelete(asset.id);
+    if (asset && asset.id) {
+      onDelete(asset.id);
+    } else {
+      console.error('Asset ID is not defined');
+    }
   };
 
   return (

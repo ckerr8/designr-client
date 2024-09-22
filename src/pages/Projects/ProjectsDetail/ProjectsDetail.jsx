@@ -6,9 +6,10 @@ import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle, Box
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddTask from '../../../components/AddTask/AddTask'; // Ensure this path is correct
 
 export default function ProjectDetails() {
-    const { idFromParams } = useParams();
+    const { idFromParams } = useParams(); // Extracts project ID from URL
     const navigate = useNavigate();
     
     const [project, setProject] = useState(null);
@@ -16,22 +17,23 @@ export default function ProjectDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  
+    const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+
+    // Define fetchProjectWithTasks outside of useEffect
+    const fetchProjectWithTasks = async () => {
+        try {
+            const response = await api.get(`/projects/${idFromParams}`);
+            setProject(response.data);
+            setTasks(response.data.tasks || []);
+            setLoading(false);
+        } catch (err) {
+            setError('Failed to fetch project and tasks');
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (!idFromParams) return;
-
-        const fetchProjectWithTasks = async () => {
-            try {
-                const response = await api.get(`/projects/${idFromParams}`);
-                setProject(response.data);
-                setTasks(response.data.tasks || []);
-                setLoading(false);
-            } catch (err) {
-                setError('Failed to fetch project and tasks');
-                setLoading(false);
-            }
-        };
-
         fetchProjectWithTasks();
     }, [idFromParams]);
 
@@ -53,6 +55,15 @@ export default function ProjectDetails() {
             setError('Failed to delete project. Please try again.');
         }
     };
+
+    const handleAddTaskOpen = () => setIsAddTaskOpen(true);
+    const handleAddTaskClose = () => setIsAddTaskOpen(false);
+
+    const handleTaskCreated = async (newTask) => {
+        console.log("New Task Created:", newTask);
+        handleAddTaskClose();
+        await fetchProjectWithTasks(); // Refetch project data to update tasks
+    };
   
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -71,46 +82,46 @@ export default function ProjectDetails() {
             <Typography variant="body1">Description: {project.description}</Typography>
             <Typography variant="body1">Deadline: {new Date(project.deadline).toLocaleDateString()}</Typography>
             <Typography variant="body1">Price: ${project.price}</Typography>
-            <Typography variant="h4" sx={{ mt: 4 }}>Tasks</Typography>
-            {tasks.length === 0 ? (
-                <div>
-                <p>No tasks for this project</p>
-                <Button 
-                startIcon={<DeleteIcon />} 
-                color="error" 
-                onClick={handleOpenDeleteModal}
-            >
-                Delete Project
-            </Button>
-            </div>
-            ) : (
-                tasks.map((task) => (
-                    <Card key={task.id} className='main-contain__item' sx={{ maxWidth: 345, mt: 2 }}>
-                        <CardActionArea>
-                            {task.image_url && (
-                                <CardMedia
-                                    component="img"
-                                    height="160"
-                                    alt={task.title}
-                                    image={task.image_url}
-                                />
-                            )}
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {task.title}
-                                </Typography>
-                                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                    {task.description}
-                                </Typography>
-                                <Typography variant="body2">
-                                    Status: {task.status}
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                ))
-            )}
 
+            {/* Tasks Section */}
+            <Box sx={{ mt: 4 }}>
+                <Typography variant="h4">Tasks</Typography>
+                {tasks.length === 0 ? (
+                    <p>No tasks for this project</p>
+                ) : (
+                    tasks.map((task) => (
+                        <Card key={task.id} className='main-contain__item' sx={{ maxWidth: 345, mt: 2 }}>
+                            <CardActionArea>
+                                {task.image_url && (
+                                    <CardMedia
+                                        component="img"
+                                        height="160"
+                                        alt={task.title}
+                                        image={task.image_url}
+                                    />
+                                )}
+                                <CardContent>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {task.title}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                        {task.description}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        Status: {task.status}
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    ))
+                )}
+                <Button variant="contained" onClick={handleAddTaskOpen} sx={{ mt: 2 }}>Add New Task</Button>
+            </Box>
+
+            {/* Add Task Dialog */}
+            <AddTask open={isAddTaskOpen} handleClose={handleAddTaskClose} onAssetCreated={handleTaskCreated} />
+
+            {/* Delete Project Dialog */}
             <Dialog open={deleteModalOpen} onClose={handleCloseDeleteModal}>
                 <DialogTitle>Delete Project</DialogTitle>
                 <DialogContent>
