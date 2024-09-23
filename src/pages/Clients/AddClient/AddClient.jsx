@@ -40,8 +40,8 @@ export default function AddClient() {
             const response = await api.post('/clients', newClient);
             setShowSuccess(true);
             setTimeout(() => {
-                navigate('/clients'); // Adjust this path as needed
-            }, 2000);
+                navigate('/clients'); 
+            }, 1000);
         } catch (err) {
             console.error('Failed to create client:', err);
             setError('Failed to create client. Please try again.');
@@ -49,7 +49,7 @@ export default function AddClient() {
     };
 
     const handleClose = () => {
-        navigate('/clients'); // Adjust this path as needed
+        navigate('/clients'); 
     };
 
     return (

@@ -30,7 +30,7 @@ import "./App.scss";
 import AssetsDetail from './pages/DesignAssets/AssetsDetail/AssetsDetail.jsx';
 import DeleteProject from './components/DeleteProject/DeleteProject.jsx';
 import TasksDetail from './pages/Tasks/Tasks.jsx';
-
+import EditProjectPage from './pages/Projects/ProjectsDetail/EditProject/EditProject.jsx';
 function App(props) {
   return (
     <BrowserRouter>
@@ -66,6 +66,10 @@ function App(props) {
     <Route 
     path='/projects/:idFromParams/delete' 
     element={<DeleteProject />} />
+
+    <Route 
+    path='/projects/:idFromParams/edit' 
+    element={<EditProjectPage />} />
 
     <Route 
     path='/projects/add'
