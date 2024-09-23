@@ -1,165 +1,202 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from '../../../api';
-import { 
-  Card, CardActionArea, CardMedia, CardContent, Typography, 
-  Button, Dialog, DialogActions, DialogContent, DialogTitle, Box
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Box,
+  CardActions,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import AddTask from '../../../components/AddTask/AddTask';
+import EditTaskDialog from "../../../components/EditTask/EditTask";
 
 export default function ProjectDetails() {
-    const { idFromParams } = useParams();
-    const navigate = useNavigate();
-    
-    const [project, setProject] = useState(null);
-    const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
-
-    const fetchProjectWithTasks = async () => {
-        try {
-            const response = await api.get(`/projects/${idFromParams}`);
-            setProject(response.data);
-            setTasks(response.data.tasks || []);
-            setLoading(false);
-        } catch (err) {
-            setError('Failed to fetch project and tasks');
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (idFromParams) {
-            fetchProjectWithTasks();
-        }
-    }, [idFromParams]);
-
-    const handleOpenDeleteModal = () => setDeleteModalOpen(true);
-    const handleCloseDeleteModal = () => setDeleteModalOpen(false);
-
-    const handleDelete = async () => {
-        try {
-            await api.delete(`/projects/${idFromParams}`);
-            handleCloseDeleteModal();
-            navigate('/projects', { state: { message: 'Project deleted successfully' } });
-        } catch (err) {
-            console.error('Error deleting project:', err);
-            setError('Failed to delete project. Please try again.');
-        }
-    };
-
-    const handleTaskDeleted = async (taskId) => {
-        try {
-            await api.delete(`/tasks/${taskId}`);
-            await fetchProjectWithTasks();
-        } catch (err) {
-            console.error('Error deleting task:', err);
-            setError('Failed to delete task. Please try again.');
-        }
-    };
-
-    const handleAddTaskOpen = () => setIsAddTaskOpen(true);
-    const handleAddTaskClose = () => setIsAddTaskOpen(false);
-
-    const handleTaskCreated = async (newTask) => {
-        console.log("New Task Created:", newTask);
-        handleAddTaskClose();
-        await fetchProjectWithTasks();
-    };
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-    if (!project) return <div>No project found</div>;
+  const { idFromParams } = useParams();
+  const navigate = useNavigate();
+  const [project, setProject] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-    return (
-        <div className='main-contain'>
-            <h2>{project.project_name}</h2>
-            <Button 
-                startIcon={<DeleteIcon />} 
-                color="error" 
-                onClick={handleOpenDeleteModal}
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  
+  // New states for editing
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  const fetchProjectWithTasks = async () => {
+    try {
+      const response = await api.get(`/projects/${idFromParams}`);
+      setProject(response.data);
+      setTasks(response.data.tasks || []);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch project and tasks');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (idFromParams) {
+      fetchProjectWithTasks();
+    }
+  }, [idFromParams]);
+
+  const handleOpenDeleteModal = () => setDeleteModalOpen(true);
+  const handleCloseDeleteModal = () => setDeleteModalOpen(false);
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/projects/${idFromParams}`);
+      handleCloseDeleteModal();
+      navigate('/projects', { state: { message: 'Project deleted successfully' } });
+    } catch (err) {
+      console.error('Error deleting project:', err);
+      setError('Failed to delete project. Please try again.');
+    }
+  };
+
+  const handleTaskDeleted = async (taskId) => {
+    try {
+      await api.delete(`/tasks/${taskId}`);
+      await fetchProjectWithTasks();
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      setError('Failed to delete task. Please try again.');
+    }
+  };
+
+  const handleAddTaskOpen = () => setIsAddTaskOpen(true);
+  const handleAddTaskClose = () => setIsAddTaskOpen(false);
+
+  const handleTaskCreated = async (newTask) => {
+    console.log("New Task Created:", newTask);
+    handleAddTaskClose();
+    await fetchProjectWithTasks();
+  };
+
+  // New functions for editing
+  const handleOpenEditModal = (task) => {
+    setSelectedTask(task);
+    setEditOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setSelectedTask(null);
+    setEditOpen(false);
+  };
+
+  const handleSaveTask = async (editedTask) => {
+    try {
+      const { id, task_name, quantity, category, description, status } = editedTask;
+      const updateData = { task_name, quantity, category, description, status };
+  
+      const response = await api.put(`/tasks/${id}`, updateData);
+  
+      // Update the task in the local state without refetching
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === id ? response.data : task))
+      );
+  
+      setEditOpen(false);
+      setSelectedTask(null);
+      setError(null); // Clear any previous errors
+    } catch (error) {
+      console.error('Error updating task:', error.response?.data || error.message);
+      setError('Failed to update task. Please try again.');
+    }
+  };
+
+  if (loading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography color="error">{error}</Typography>;
+
+  return (
+    <Box className="main-contain">
+    <Typography variant="h4" gutterBottom>
+      {project.project_name}
+    </Typography>
+    
+    {/* Add Task Button */}
+    <Button variant="contained" color="primary" onClick={handleAddTaskOpen}>
+      Add Task
+    </Button>
+    
+    {/* Tasks List */}
+    {tasks.length === 0 ? (
+      <Typography>No tasks for this project.</Typography>
+    ) : (
+      tasks.map((task) => (
+        <Card key={task.id} sx={{ marginBottom: 2 }}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              {task.task_name}
+            </Typography>
+            <Typography color="text.secondary">
+              {task.description}
+            </Typography>
+            <Typography variant="body2">
+              Category: {task.category}
+            </Typography>
+            <Typography variant="body2">
+              Quantity: {task.quantity}
+            </Typography>
+            <Typography variant="body2">
+              Status: {task.status}
+            </Typography>
+          </CardContent>
+          <CardActions>
+          <Button
+  size="small"
+  startIcon={<EditIcon />}
+  onClick={() => handleOpenEditModal(task)}
+>
+  Edit
+</Button>
+            <Button
+              size="small"
+              startIcon={<DeleteIcon />}
+              onClick={() => handleTaskDeleted(task.id)}
             >
-                Delete Project
+              Delete
             </Button>
-            <Typography variant="body1">Description: {project.description}</Typography>
-            <Typography variant="body1">Deadline: {new Date(project.deadline).toLocaleDateString()}</Typography>
-            <Typography variant="body1">Price: ${project.price}</Typography>
+          </CardActions>
+        </Card>
+      ))
+    )}
 
-            <Box sx={{ mt: 4 }}>
-                <Typography variant="h4">Tasks</Typography>
-                {tasks.length === 0 ? (
-                    <p>No tasks for this project</p>
-                ) : (
-                    tasks.map((task) => (
-                        <Card key={task.id} className='main-contain__item' sx={{ maxWidth: 345, mt: 2 }}>
-                            <CardActionArea>
-                                {task.image_url && (
-                                    <CardMedia
-                                        component="img"
-                                        height="160"
-                                        alt={task.title}
-                                        image={task.image_url}
-                                    />
-                                )}
-                                <CardContent>
-                                    <Typography gutterBottom variant="h5" component="div">
-                                        {task.title}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                                        {task.description}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        Status: {task.status}
-                                    </Typography>
-                                    <Button onClick={() => handleTaskDeleted(task.id)} color="error">
-                                        Delete Task
-                                    </Button>
-                                </CardContent>
-                            </CardActionArea>
-                        </Card>
-                    ))
-                )}
-                <Button variant="contained" onClick={handleAddTaskOpen} sx={{ mt: 2 }}>Add New Task</Button>
-            </Box>
+    {/* Add Task Dialog */}
+    <AddTask open={isAddTaskOpen} handleClose={handleAddTaskClose} onTaskCreated={handleTaskCreated} />
 
-            <AddTask open={isAddTaskOpen} handleClose={handleAddTaskClose} onAssetCreated={handleTaskCreated} />
-
-            <Dialog open={deleteModalOpen} onClose={handleCloseDeleteModal}>
-                <DialogTitle>Delete Project</DialogTitle>
-                <DialogContent>
-                    <Box sx={{ m: 2 }}>
-                        <Typography variant="body1" gutterBottom>
-                            Are you sure you want to delete the following project?
-                        </Typography>
-                        <Typography variant="body2">
-                            <strong>Project Name:</strong> {project.project_name}
-                        </Typography>
-                        <Typography variant="body2">
-                            <strong>Description:</strong> {project.description}
-                        </Typography>
-                        <Typography variant="body2">
-                            <strong>Deadline:</strong> {new Date(project.deadline).toLocaleDateString()}
-                        </Typography>
-                        {tasks.length > 0 && (
-                            <Typography variant="body2" color="error">
-                                Warning: This project has {tasks.length} associated task(s).
-                                Deleting this project will update these tasks to 'Unassigned' status.
-                            </Typography>
-                        )}
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDeleteModal} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleDelete} color="error">
-                        Delete
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </div>
-    );
+    {/* Edit Task Dialog */}
+    <EditTaskDialog
+      open={editOpen}
+      handleClose={handleCloseEditModal}
+      task={selectedTask}
+      onSave={handleSaveTask}
+    />
+    
+    {/* Delete Project Dialog */}
+    <Dialog open={deleteModalOpen} onClose={handleCloseDeleteModal}>
+      <DialogTitle>Delete Project</DialogTitle>
+      <DialogContent>
+        <Typography>Are you sure you want to delete this project?</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDeleteModal}>Cancel</Button>
+        <Button onClick={handleDelete} color="error">Delete</Button>
+      </DialogActions>
+    </Dialog>
+  </Box>
+);
 }
