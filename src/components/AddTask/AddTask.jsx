@@ -46,7 +46,7 @@ export default function AddTask({ open, handleClose, onAssetCreated }) {
       handleClose();
     } catch (err) {
       console.error('Failed to create task:', err);
-      console.error('Error details:', err.response.data); // Log detailed error response
+      console.error('Error details:', err.response.data); 
       setError('Failed to create task. Please try again.');
     }
   };
