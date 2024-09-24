@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -14,7 +14,8 @@ import {
 } from '@mui/material';
 import api from '../../api';
 
-export default function CreateAssetModal({ open, handleClose, onAssetCreated }) {
+export default function CreateAssetModal({ open, handleClose, onAssetCreated, asset }) {
+  const [clients, setClients] = useState([]);
   const [newAsset, setNewAsset] = useState({
     asset_name: '',
     category: '',
@@ -29,6 +30,20 @@ export default function CreateAssetModal({ open, handleClose, onAssetCreated }) 
     const { name, value } = event.target;
     setNewAsset(prev => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    const fetchClients = async () => {
+        try {
+            const response = await api.get('/clients');
+            setClients(response.data);
+        } catch (err) {
+            console.error('Failed to fetch clients:', err);
+            setError('Failed to load clients. Please refresh the page.');
+        }
+    };
+    fetchClients();
+}, []);
+
 
   const handleSubmit = async () => {
     try {
@@ -75,14 +90,21 @@ export default function CreateAssetModal({ open, handleClose, onAssetCreated }) 
             fullWidth
             margin="normal"
           />
-          <TextField
-            name="clients_id"
-            label="Client ID"
-            value={newAsset.clients_id}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
+        <FormControl fullWidth margin="normal">
+                    <InputLabel>Client</InputLabel>
+                    <Select
+                        name="clients_id"
+                        value={newAsset.clients_id}
+                        onChange={handleChange}
+                        required
+                    >
+                        {clients.map((client) => (
+                            <MenuItem key={client.id} value={client.id}>
+                                {client.contact_name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
           <TextField
             name="tasks_id"
             label="Task ID"

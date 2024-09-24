@@ -72,7 +72,7 @@ export default function AddProject() {
             setShowSuccess(true);
             setTimeout(() => {
                 navigate('/projects');
-            }, 2000);
+            }, 1000);
         } catch (err) {
             console.error('Failed to create project:', err);
             if (err.response) {

@@ -43,8 +43,7 @@ export default function EditProjectPage() {
       try {
         const response = await api.put(`/projects/${idFromParams}`, formData);
         setShowSuccess(true);
-        // If you have an onSave function, use it here
-        // onSave(response.data);
+
         setTimeout(() => {
           navigate(`/projects/${idFromParams}`);
         }, 2000);

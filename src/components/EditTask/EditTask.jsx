@@ -103,10 +103,3 @@ export default function EditTaskDialog({ open, handleClose, task, onSave }) {
   );
 }
 
-
-
-
-
-
-
-
