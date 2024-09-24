@@ -73,19 +73,6 @@ export default function AssetsDetail() {
         }
     };
 
-    const fetchProjectForTasks = async () => {
-        try {
-          const response = await api.get(`/projects`);
-          setProject(response.data);
-          setLoading(false);
-          console.log(response.data)
-        } catch (err) {
-          setError("Failed to fetch project and tasks");
-          setLoading(false);
-        }
-      };
-      fetchProjectForTasks();
-
     const handleOpenDeleteModal = () => {
         setDeleteModalOpen(true);
       };
