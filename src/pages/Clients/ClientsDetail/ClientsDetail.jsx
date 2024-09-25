@@ -1,6 +1,5 @@
-
-
 import React, { useEffect, useState } from "react";
+import CssBaseline from '@mui/material/CssBaseline';
 import { useParams } from "react-router-dom";
 import api from '../../../api';
 import { Card, CardContent, Typography, Box, Button } from '@mui/material';
@@ -84,6 +83,7 @@ export default function ClientDetails() {
 
     return (
         <Box className="main-contain">
+          <Card className="main-contain__item">
             <Typography variant="h4">{clientData.contact_name}</Typography>
             <Typography variant="body1">Email: {clientData.contact_email}</Typography>
             <Typography variant="body1">Phone: {clientData.contact_phone}</Typography>
@@ -95,11 +95,12 @@ export default function ClientDetails() {
             clientId={clientData.id} 
             onDelete={handleDeleteClient}
     // Handle deletion logic here (e.g., call API to delete client)
-  />
+  /></Card>
             {/* Render assets */}
+            <Card className="main-contain__item--assets">
             <Typography variant="h5" sx={{ mt: 4 }}>Assets</Typography>
         {clientData.assets && clientData.assets.map(asset => (
-          <Card key={asset.id} sx={{ mb: 2 }}>
+          <Card className="assets" key={asset.id} sx={{ mb: 2 }}>
                     <CardContent>
                         <Typography variant="h6">{asset.asset_name}</Typography>
                         <Typography variant="body2">Category: {asset.category}</Typography>
@@ -107,8 +108,10 @@ export default function ClientDetails() {
                     </CardContent>
                 </Card>
             ))}
-
+      </Card>
             {/* Render projects and their tasks */}
+
+            <Card className='main-contain__item--projects'>
             <Typography variant="h5" sx={{ mt: 4 }}>Projects</Typography>
             {clientData.projects && clientData.projects.map(project => (
           <Card key={project.id} sx={{ mb: 2 }}>
@@ -128,6 +131,8 @@ export default function ClientDetails() {
                     </CardContent>
                 </Card>
             ))}
+    </Card>
+
   <EditClientDialog 
       open={editOpen} 
       handleClose={handleCloseEditModal} 

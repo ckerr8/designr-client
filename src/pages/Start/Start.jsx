@@ -9,13 +9,13 @@ import MainGrid from '../../components/MainGrid/MainGrid.jsx';
 import SideMenu from '../../components/SideMenu/SideMenu.jsx';
 import AppTheme from '../../shared-theme/AppTheme.jsx';
 import { chartsCustomizations } from '../../theme/customizations/charts.jsx';
-import { dataGridCustomizations } from '../../theme/customizations/dataDisplay.jsx';
+import { dataDisplayCustomizations } from '../../theme/customizations/dataDisplay.jsx';
 import { datePickersCustomizations } from '../../theme/customizations/datePickers.jsx';
 import { treeViewCustomizations } from '../../theme/customizations/TreeView.jsx';
 
 const xThemeComponents = {
   ...chartsCustomizations,
-  ...dataGridCustomizations,
+  ...dataDisplayCustomizations,
   ...datePickersCustomizations,
   ...treeViewCustomizations,
 };

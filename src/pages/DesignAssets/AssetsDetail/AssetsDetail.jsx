@@ -137,7 +137,7 @@ export default function AssetsDetail() {
                 onSave={handleSave}
             />
                <Button onClick={handleOpenDeleteModal} color="error">
-        Delete Asset
+        Delete Assett
       </Button>
       <DeleteAssetModal
         open={deleteModalOpen}

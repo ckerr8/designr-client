@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import { inputsCustomizations } from './customizations/inputs.jsx';
-import { dataGridCustomizations } from '../theme/customizations/dataDisplay.jsx';
+import { dataDisplayCustomizations } from '../theme/customizations/dataDisplay.jsx';
 import { feedbackCustomizations } from './customizations/feedback.jsx';
 import { navigationCustomizations } from './customizations/navigation.jsx';
 import { surfacesCustomizations } from './customizations/surfaces.jsx';
@@ -25,7 +25,7 @@ function AppTheme({ children, disableCustomTheme, themeComponents }) {
           shape,
           components: {
             ...inputsCustomizations,
-            ...dataGridCustomizations,
+            ...dataDisplayCustomizations,
             ...feedbackCustomizations,
             ...navigationCustomizations,
             ...surfacesCustomizations,

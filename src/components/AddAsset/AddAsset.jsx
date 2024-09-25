@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,59 +11,56 @@ import {
   FormControl,
   InputLabel,
   Box,
-  Typography,
-} from "@mui/material";
-import api from "../../api";
+  Typography
+} from '@mui/material';
+import api from '../../api';
 
-export default function CreateAssetModal({
-  open,
-  handleClose,
-  onAssetCreated,
-}) {
-  const [selectedProject, setSelectedProject] = useState("");
+export default function CreateAssetModal({ open, handleClose, onAssetCreated }) {
   const [clients, setClients] = useState([]);
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [loadingTasks, setLoadingTasks] = useState(false);
+  const [selectedProject, setSelectedProject] = useState('');
   const [newAsset, setNewAsset] = useState({
-    asset_name: "",
-    category: "",
+    asset_name: '',
+    category: '',
     quantity: 0,
-    clients_id: "",
-    tasks_id: "", 
-    remote_url: "",
+    clients_id: '',
+    project_id: '', // Added project_id to state
+    task_id: '', // Changed tasks_id to task_id for consistency
+    status: 'active',
+    remote_url: ''
   });
 
+  // Fetch clients and projects when the modal opens
   useEffect(() => {
-    if (newAsset.clients_id) {
+    if (open) {
+      fetchClients();
       fetchProjects();
     }
-  }, [newAsset.clients_id]);
+  }, [open]);
 
   const fetchClients = async () => {
     try {
-      const response = await api.get("/clients");
+      const response = await api.get('/clients');
       setClients(response.data);
     } catch (err) {
-      console.error("Failed to fetch clients:", err);
-      setError("Failed to load clients. Please refresh the page.");
+      console.error('Failed to fetch clients:', err);
+      setError('Failed to load clients. Please refresh the page.');
     }
   };
 
   // Function to fetch all projects
   const fetchProjects = async () => {
-    if (!newAsset.clients_id) return;
     try {
-      const response = await api.get(
-        `/projects?clients_id=${newAsset.clients_id}`
-      );
+      const response = await api.get('/projects');
       setProjects(response.data);
       setLoadingProjects(false);
     } catch (err) {
-      console.error("Failed to fetch projects:", err);
-      setError("Failed to load projects. Please refresh the page.");
+      console.error('Failed to fetch projects:', err);
+      setError('Failed to load projects. Please refresh the page.');
       setLoadingProjects(false);
     }
   };
@@ -80,20 +77,22 @@ export default function CreateAssetModal({
       setTasks(response.data.tasks || []);
       setLoadingTasks(false);
     } catch (err) {
-      console.error("Failed to fetch tasks:", err);
+      console.error('Failed to fetch tasks:', err);
       setError("Failed to load tasks. Please try again.");
       setLoadingTasks(false);
     }
   };
 
+
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     setNewAsset((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "clients_id") {
-      setSelectedProject("");
+  
+    if (name === 'clients_id') {
+      setSelectedProject('');
       setTasks([]);
-    } else if (name === "project_id") {
+    } else if (name === 'project_id') {
       setSelectedProject(value);
       setLoadingTasks(true);
       fetchTasks(value);
@@ -102,36 +101,31 @@ export default function CreateAssetModal({
 
   const handleSubmit = async () => {
     // Basic validation
-    if (
-      !newAsset.asset_name ||
-      !newAsset.category ||
-      !newAsset.clients_id ||
-      !newAsset.project_id
-    ) {
-      setError("Please fill in all required fields.");
+    if (!newAsset.asset_name || !newAsset.category || !newAsset.clients_id || !newAsset.project_id) {
+      setError('Please fill in all required fields.');
       return;
     }
 
     try {
-      const response = await api.post("/assets", newAsset);
+      const response = await api.post('/assets', newAsset);
       onAssetCreated(response.data);
       handleClose();
-
+      
       // Reset form state
       setNewAsset({
-        asset_name: "",
-        category: "",
+        asset_name: '',
+        category: '',
         quantity: 0,
-        clients_id: "",
-        project_id: "",
-        tasks_id: "",
-        status: "active",
-        remote_url: "",
+        clients_id: '',
+        project_id: '',
+        task_id: '',
+        status: 'active',
+        remote_url: ''
       });
       setError(null);
     } catch (err) {
-      console.error("Failed to create asset:", err);
-      setError("Failed to create asset. Please try again.");
+      console.error('Failed to create asset:', err);
+      setError('Failed to create asset. Please try again.');
     }
   };
 
@@ -144,10 +138,7 @@ export default function CreateAssetModal({
             {error}
           </Typography>
         )}
-        <Box
-          component="form"
-          sx={{ "& .MuiTextField-root": { m: 1, width: "25ch" } }}
-        >
+        <Box component="form" sx={{ '& .MuiTextField-root': { m: 1, width: '25ch' } }}>
           <TextField
             name="asset_name"
             label="Asset Name"
@@ -182,16 +173,7 @@ export default function CreateAssetModal({
             <Select
               name="clients_id"
               value={newAsset.clients_id}
-              onChange={(e) => {
-                handleChange(e);
-                setNewAsset((prev) => ({
-                  ...prev,
-                  project_id: "",
-                  task_id: "",
-                }));
-                setProjects([]);
-                setSelectedProject("");
-              }}
+              onChange={handleChange}
               required
             >
               {clients.map((client) => (
@@ -201,58 +183,50 @@ export default function CreateAssetModal({
               ))}
             </Select>
           </FormControl>
-
-          <FormControl
-            fullWidth
-            margin="normal"
-            disabled={!newAsset.clients_id || loadingProjects}
-          >
+          {/* Project Selection */}
+          <FormControl fullWidth margin="normal" required disabled={loadingProjects}>
             <InputLabel>Project</InputLabel>
             <Select
-              value={selectedProject}
+              name="project_id"
+              value={newAsset.project_id}
               onChange={(e) => {
                 const projectId = e.target.value;
                 setSelectedProject(projectId);
-                setNewAsset((prev) => ({
-                  ...prev,
-                  project_id: projectId,
-                  tasks_id: "",
-                }));
+                setNewAsset(prev => ({ ...prev, project_id: projectId, tasks_id: '' }));
                 fetchTasks(projectId);
               }}
               label="Project"
             >
-              <MenuItem value="">All Projects</MenuItem>
-              {projects
-                .filter((project) => project.clients_id === newAsset.clients_id)
-                .map((project) => (
-                  <MenuItem key={project.id} value={project.id}>
-                    {project.project_name}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-
-          <FormControl
-            fullWidth
-            margin="normal"
-            required
-            disabled={!selectedProject || loadingTasks}
-          >
-            <InputLabel>Task</InputLabel>
-            <Select
-              name="tasks_id"
-              value={newAsset.tasks_id}
-              onChange={handleChange}
-              label="Task"
-            >
-              {tasks.map((task) => (
-                <MenuItem key={task.id} value={task.id}>
-                  {task.task_name}
+              {projects.map((project) => (
+                <MenuItem key={project.id} value={project.id}>
+                  {project.project_name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+
+          {/* Task Selection */}
+          <FormControl fullWidth margin="normal" required disabled={!selectedProject || loadingTasks}>
+  <InputLabel>Task</InputLabel>
+  <Select
+    name="tasks_id"
+    value={newAsset.tasks_id}
+    onChange={handleChange}
+    label="Task"
+    >
+      {tasks
+        .filter(task => {
+          const project = projects.find(p => p.id === task.projects_id);
+          return project && project.client_id === newAsset.clients_id &&
+                 (!selectedProject || task.projects_id === selectedProject);
+        })
+        .map((task) => (
+          <MenuItem key={task.id} value={task.id}>
+            {task.task_name}
+          </MenuItem>
+        ))}
+    </Select>
+</FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel>Status</InputLabel>
             <Select

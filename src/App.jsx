@@ -11,6 +11,7 @@ import AppTheme from './shared-theme/AppTheme.jsx';
 import SideMenu from './components/SideMenu/SideMenu';
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Projects from "./pages/Projects/Projects";
+import Blog from './pages/Clients/Clientele';
 import Start from "./pages/Start/Start";
 import Clients from './pages/Clients/Clients';
 import DesignAssets from "./pages/DesignAssets/DesignAssets";
@@ -19,7 +20,7 @@ import ProjectsDetail from "./pages/Projects/ProjectsDetail/ProjectsDetail.jsx"
 import AddProject from './pages/Projects/AddProject/AddProject.jsx';
 import ClientsDetail from "./pages/Clients/ClientsDetail/ClientsDetail.jsx"
 import AddClient from "./pages/Clients/AddClient/AddClient.jsx"
-import { dataGridCustomizations } from './theme/customizations/dataDisplay.jsx';
+import { dataDisplayCustomizations } from './theme/customizations/dataDisplay.jsx';
 import { datePickersCustomizations } from './theme/customizations/datePickers.jsx';
 import { treeViewCustomizations } from './theme/customizations/TreeView.jsx';
 import '@fontsource/roboto/300.css';
@@ -57,6 +58,10 @@ function App(props) {
     <Route 
     path='/projects' 
     element={<Projects />} />
+  
+    <Route 
+    path='/blog' 
+    element={<Blog />} />
 
     
     <Route 
